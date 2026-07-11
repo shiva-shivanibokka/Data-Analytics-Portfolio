@@ -1,0 +1,4 @@
+# Normalize line endings to LF so Ubuntu CI (make, shell) never sees CRLF.
+* text=auto eol=lf
+*.parquet binary
+*.png binary
