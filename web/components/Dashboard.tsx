@@ -3,6 +3,7 @@
 import { useState } from "react";
 import KpiCards from "./KpiCards";
 import Explorer from "./Explorer";
+import Tip from "./Tip";
 import { CategoryChart, FunnelChart, MonthlyChart, OnTimeChart, StateChart } from "./Charts";
 
 const REPO = "https://github.com/shiva-shivanibokka/Data-Analytics-Portfolio/blob/main/notebooks";
@@ -25,10 +26,10 @@ const TABS = [
 ];
 
 const FINDINGS = [
-  { tone: "pink", v: "3.1%", k: "<b>repeat rate</b> — Olist is a one-purchase marketplace; retention is the constraint." },
-  { tone: "cyan", v: "R$16.0M", k: "<b>GMV</b> across ~99k orders at a R$161 average order value." },
-  { tone: "lime", v: "4.09★", k: "<b>avg review</b>, but the 1-star tail is driven by late delivery, not product." },
-  { tone: "amber", v: "78.6%", k: "on-time rate in the <b>Mar-2018 backlog</b> — the cause of that year's review drop." },
+  { tone: "pink", h: "Repeat rate", v: "3.1%", tip: "Only ~3% of customers ever order again — Olist is a one-purchase marketplace, so retention is the core growth constraint." },
+  { tone: "cyan", h: "GMV", v: "R$16.0M", tip: "R$16.0M gross merchandise value across ~99k orders, at a R$161 average order value." },
+  { tone: "lime", h: "Avg review", v: "4.09★", tip: "Mean 1–5 star rating. High overall, but the 1-star tail is driven by late delivery, not the product." },
+  { tone: "amber", h: "Mar-2018 on-time", v: "78.6%", tip: "On-time delivery collapsed to 78.6% during the Feb–Mar 2018 backlog — the cause of that year's review-score drop." },
 ];
 
 const NOTEBOOKS = [
@@ -62,10 +63,10 @@ const NOTEBOOKS = [
   },
 ];
 
-function Panel({ title, tag, children }: { title: string; tag: string; children: React.ReactNode }) {
+function Panel({ title, tag, tip, children }: { title: string; tag: string; tip: string; children: React.ReactNode }) {
   return (
     <section className="panel">
-      <div className="phead"><h3>{title}</h3></div>
+      <div className="phead"><h3>{title}</h3><Tip text={tip} /></div>
       <p className="tag">{tag}</p>
       {children}
     </section>
@@ -93,8 +94,11 @@ export default function Dashboard({ kpis, monthly, funnel, categories, states }:
           <div className="findings">
             {FINDINGS.map((f) => (
               <div key={f.v} className={`finding ${f.tone}`}>
+                <div className="tile-head">
+                  <span className="k">{f.h}</span>
+                  <Tip text={f.tip} />
+                </div>
                 <div className="fv">{f.v}</div>
-                <div className="fk" dangerouslySetInnerHTML={{ __html: f.k }} />
               </div>
             ))}
           </div>
@@ -105,15 +109,27 @@ export default function Dashboard({ kpis, monthly, funnel, categories, states }:
       {active === "growth" && (
         <>
           <div className="grid-2 wide">
-            <Panel title="Orders & GMV" tag="Monthly volume and revenue. The Nov 2017 Black Friday spike is real, not planted.">
+            <Panel
+              title="Orders & GMV"
+              tag="Monthly volume and revenue. The Nov 2017 Black Friday spike is real, not planted."
+              tip="Bars are the number of orders each month (left axis); the line is GMV in R$ (right axis). Hover any point for exact values."
+            >
               <MonthlyChart data={monthly} />
             </Panel>
-            <Panel title="Order lifecycle funnel" tag="~98% of orders reach delivered — the leak is lateness, not cancellation.">
+            <Panel
+              title="Order lifecycle funnel"
+              tag="~98% of orders reach delivered — the leak is lateness, not cancellation."
+              tip="Each stage counts orders that reached at least that far through the order lifecycle. The final delivered stage is highlighted in lime."
+            >
               <FunnelChart data={funnel} />
             </Panel>
           </div>
           <div style={{ marginTop: "1.1rem" }}>
-            <Panel title="On-time delivery over time" tag="The Feb–Mar 2018 collapse drove the review-score drop investigated in notebook 06.">
+            <Panel
+              title="On-time delivery over time"
+              tag="The Feb–Mar 2018 collapse drove the review-score drop investigated in notebook 06."
+              tip="Share of delivered orders that arrived on or before the estimated date, by month. The trough is the Feb–Mar 2018 delivery backlog."
+            >
               <OnTimeChart data={monthly} />
             </Panel>
           </div>
@@ -122,10 +138,18 @@ export default function Dashboard({ kpis, monthly, funnel, categories, states }:
 
       {active === "segments" && (
         <div className="grid-2 even">
-          <Panel title="Top categories by GMV" tag="Revenue spreads across many verticals — no single category dominates.">
+          <Panel
+            title="Top categories by GMV"
+            tag="Revenue spreads across many verticals — no single category dominates."
+            tip="Total revenue (R$) for the top 12 product categories. Hover a bar for the exact GMV."
+          >
             <CategoryChart data={categories} />
           </Panel>
-          <Panel title="Orders by state" tag="Demand concentrates in São Paulo (SP) — ~42% of all orders.">
+          <Panel
+            title="Orders by state"
+            tag="Demand concentrates in São Paulo (SP) — ~42% of all orders."
+            tip="Order count by the customer's Brazilian state (top 15). Hover a bar to see the full state name and order count."
+          >
             <StateChart data={states} />
           </Panel>
         </div>

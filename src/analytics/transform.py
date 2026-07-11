@@ -108,6 +108,10 @@ def build_orders(raw: dict[str, pd.DataFrame], items: pd.DataFrame) -> pd.DataFr
     delivered = "order_delivered_customer_date"
     est = "order_estimated_delivery_date"
 
+    # Orders with no line items (many cancelled/unavailable ones) have no
+    # category; label them so downstream never sees a null category.
+    orders["category"] = orders["category"].fillna("unknown")
+
     orders["order_month"] = orders[ts].dt.to_period("M").dt.to_timestamp()
     orders["is_delivered"] = orders["order_status"].eq("delivered")
 

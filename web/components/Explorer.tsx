@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { query } from "@/lib/duckdb";
-import { brlCompact, compact, pct } from "@/lib/format";
+import { brlCompact, compact, pct, prettyCategory, stateName } from "@/lib/format";
 import Tip from "./Tip";
 
 type Agg = { orders: number; gmv: number; avg_review: number; late_rate: number };
@@ -28,7 +28,7 @@ export default function Explorer() {
           "SELECT DISTINCT customer_state FROM orders WHERE customer_state IS NOT NULL ORDER BY 1",
         );
         const c = await query<{ category: string }>(
-          "SELECT category, count(*)::DOUBLE n FROM orders GROUP BY 1 ORDER BY n DESC LIMIT 25",
+          "SELECT category, count(*)::DOUBLE n FROM orders WHERE category IS NOT NULL GROUP BY 1 ORDER BY n DESC LIMIT 25",
         );
         setStates(s.map((r) => r.customer_state));
         setCategories(c.map((r) => (r as unknown as { category: string }).category));
@@ -72,8 +72,20 @@ export default function Explorer() {
   return (
     <div className="console">
       <div className="controls">
-        <Select label="State" value={state} options={[ALL, ...states]} onChange={setState} />
-        <Select label="Category" value={category} options={[ALL, ...categories]} onChange={setCategory} />
+        <Select
+          label="State"
+          value={state}
+          options={[ALL, ...states]}
+          onChange={setState}
+          render={(o) => (o === ALL ? "All states" : `${stateName(o)} (${o})`)}
+        />
+        <Select
+          label="Category"
+          value={category}
+          options={[ALL, ...categories]}
+          onChange={setCategory}
+          render={(o) => (o === ALL ? "All categories" : prettyCategory(o))}
+        />
         {loading && <span className="loading">● booting DuckDB in your browser…</span>}
       </div>
 
@@ -96,7 +108,7 @@ export default function Explorer() {
               const max = breakdown[0].orders || 1;
               return (
                 <div key={r.category} className="bar-row">
-                  <div className="name">{r.category}</div>
+                  <div className="name">{prettyCategory(r.category)}</div>
                   <div className="bar-track">
                     <div className="fill" style={{ width: `${(r.orders / max) * 100}%` }} />
                   </div>
@@ -131,11 +143,13 @@ function Select({
   value,
   options,
   onChange,
+  render = (o) => o,
 }: {
   label: string;
   value: string;
   options: string[];
   onChange: (v: string) => void;
+  render?: (o: string) => string;
 }) {
   return (
     <div className="field">
@@ -143,7 +157,7 @@ function Select({
       <select value={value} onChange={(e) => onChange(e.target.value)}>
         {options.map((o) => (
           <option key={o} value={o}>
-            {o}
+            {render(o)}
           </option>
         ))}
       </select>

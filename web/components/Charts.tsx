@@ -14,7 +14,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { brl, compact } from "@/lib/format";
+import { brl, compact, prettyCategory, stateName } from "@/lib/format";
 
 const CYAN = "#22d3ee";
 const VIOLET = "#a78bfa";
@@ -96,8 +96,12 @@ export function CategoryChart({ data }: { data: { category: string; gmv: number 
         </defs>
         <CartesianGrid strokeDasharray="3 3" stroke={GRID} horizontal={false} />
         <XAxis type="number" tick={TICK} tickFormatter={compact} stroke={GRID} />
-        <YAxis type="category" dataKey="category" tick={TICK} width={140} stroke={GRID} />
-        <Tooltip {...tooltipStyle} formatter={(v) => brl(v as number)} />
+        <YAxis type="category" dataKey="category" tick={TICK} width={140} stroke={GRID} tickFormatter={prettyCategory} />
+        <Tooltip
+          {...tooltipStyle}
+          labelFormatter={(c) => prettyCategory(String(c))}
+          formatter={(v) => [brl(v as number), "GMV"]}
+        />
         <Bar dataKey="gmv" fill="url(#barHoriz)" radius={[0, 3, 3, 0]} />
       </BarChart>
     </ResponsiveContainer>
@@ -135,7 +139,11 @@ export function StateChart({ data }: { data: { customer_state: string; orders: n
         <CartesianGrid strokeDasharray="3 3" stroke={GRID} horizontal={false} />
         <XAxis type="number" tick={TICK} tickFormatter={compact} stroke={GRID} />
         <YAxis type="category" dataKey="customer_state" tick={TICK} width={40} stroke={GRID} />
-        <Tooltip {...tooltipStyle} formatter={(v) => compact(v as number)} />
+        <Tooltip
+          {...tooltipStyle}
+          labelFormatter={(c) => stateName(String(c))}
+          formatter={(v) => [compact(v as number), "orders"]}
+        />
         <Bar dataKey="orders" fill="url(#barState)" radius={[0, 3, 3, 0]} />
       </BarChart>
     </ResponsiveContainer>

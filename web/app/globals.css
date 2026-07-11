@@ -60,7 +60,7 @@ a { color: var(--cyan); text-decoration-color: color-mix(in srgb, var(--cyan) 40
   font-size: clamp(2.2rem, 6vw, 4.2rem); line-height: 1.0; letter-spacing: -0.035em; margin: 0 0 .9rem;
   background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
 }
-.hero p { color: var(--muted); margin: 0; max-width: 64ch; font-size: clamp(1rem, 1.4vw, 1.12rem); line-height: 1.7; }
+.hero p { color: var(--muted); margin: 0; max-width: none; font-size: clamp(1rem, 1.4vw, 1.12rem); line-height: 1.7; }
 .hero p a { font-weight: 600; }
 .live {
   display: inline-flex; align-items: center; gap: .5rem; margin-top: 1.2rem;
@@ -79,7 +79,7 @@ a { color: var(--cyan); text-decoration-color: color-mix(in srgb, var(--cyan) 40
 }
 .tab:hover { color: var(--text); border-color: var(--cyan); transform: translateY(-1px); }
 .tab[aria-selected="true"] { color: #07101f; background: var(--grad); border-color: transparent; box-shadow: 0 6px 22px -8px var(--violet); }
-.tab-desc { color: var(--muted); font-size: .96rem; line-height: 1.65; margin: 0 0 1.7rem; max-width: 74ch; }
+.tab-desc { color: var(--muted); font-size: .96rem; line-height: 1.65; margin: 0 0 1.7rem; max-width: none; }
 .tab-desc b { color: var(--text); }
 
 /* ---- ? tooltip ---- */
@@ -112,20 +112,23 @@ a { color: var(--cyan); text-decoration-color: color-mix(in srgb, var(--cyan) 40
 /* ---- findings strip (semantic callouts) ---- */
 .findings { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .9rem; margin: 0 0 1.4rem; }
 .finding {
-  min-width: 0; border: 1px solid var(--border); border-radius: 16px; padding: 1.1rem 1.2rem;
-  background: var(--panel); backdrop-filter: blur(10px); border-left-width: 3px;
+  min-width: 0; border-radius: 16px; padding: 1.1rem 1.2rem; backdrop-filter: blur(10px);
+  border: 1px solid transparent;
+  background-image: linear-gradient(var(--panel-solid), var(--panel-solid)), var(--edge, var(--grad));
+  background-origin: border-box; background-clip: padding-box, border-box;
+  box-shadow: 0 0 34px -18px var(--glow, var(--violet));
+  transition: transform .16s ease, box-shadow .16s ease;
 }
-.finding.cyan  { border-left-color: var(--cyan); }
-.finding.pink  { border-left-color: var(--pink); }
-.finding.lime  { border-left-color: var(--lime); }
-.finding.amber { border-left-color: var(--amber); }
-.finding .fv { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.5rem, 2.4vw, 1.9rem); line-height: 1; letter-spacing: -.02em; }
+.finding:hover { transform: translateY(-2px); box-shadow: 0 0 42px -12px var(--glow, var(--violet)); }
+.finding.cyan  { --edge: linear-gradient(135deg, var(--cyan), #3b82f6); --glow: var(--cyan); }
+.finding.pink  { --edge: linear-gradient(135deg, var(--pink), var(--violet)); --glow: var(--pink); }
+.finding.lime  { --edge: linear-gradient(135deg, var(--lime), var(--cyan)); --glow: var(--lime); }
+.finding.amber { --edge: linear-gradient(135deg, var(--amber), var(--pink)); --glow: var(--amber); }
+.finding .fv { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 2.6vw, 2.1rem); line-height: 1; letter-spacing: -.02em; margin-top: .5rem; }
 .finding.cyan .fv  { color: var(--cyan); }
 .finding.pink .fv  { color: var(--pink); }
 .finding.lime .fv  { color: var(--lime); }
 .finding.amber .fv { color: var(--amber); }
-.finding .fk { margin-top: .45rem; color: var(--muted); font-size: .86rem; line-height: 1.45; }
-.finding .fk b { color: var(--text); }
 
 /* ---- metric tiles (KPIs) ---- */
 .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .85rem; }
@@ -164,7 +167,10 @@ a { color: var(--cyan); text-decoration-color: color-mix(in srgb, var(--cyan) 40
 @media (min-width: 900px) { .grid-2.wide { grid-template-columns: 2fr 1fr; } .grid-2.even { grid-template-columns: 1fr 1fr; } }
 
 /* ---- explorer / query console ---- */
-.console { display: grid; gap: 1.1rem; }
+/* minmax(0,1fr) stops a long SQL line (a grid item with min-width:auto) from
+   expanding the whole console past the panel. */
+.console { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.1rem; min-width: 0; }
+.console > * { min-width: 0; }
 .controls { display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; }
 .field { display: grid; gap: .3rem; }
 .field label { font-family: var(--font-mono); font-size: .68rem; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); }
@@ -177,8 +183,12 @@ select:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
 
 .readtiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: .7rem; }
 .readtile {
-  min-width: 0; border-radius: 14px; padding: .95rem 1rem; border: 1px solid var(--border);
-  background: linear-gradient(160deg, color-mix(in srgb, var(--violet) 12%, transparent), color-mix(in srgb, var(--cyan) 8%, transparent));
+  min-width: 0; border-radius: 14px; padding: .95rem 1rem;
+  border: 1px solid transparent;
+  background-image:
+    linear-gradient(160deg, color-mix(in srgb, var(--violet) 16%, var(--panel-solid)), color-mix(in srgb, var(--cyan) 12%, var(--panel-solid))),
+    linear-gradient(135deg, var(--violet), var(--cyan));
+  background-origin: border-box; background-clip: padding-box, border-box;
 }
 .readtile .v {
   font-family: var(--font-display); font-weight: 700; font-size: clamp(1.25rem, 1.8vw, 1.6rem);
@@ -186,11 +196,11 @@ select:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
 }
 .readtile .v.grad { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
-.bars { display: grid; gap: .5rem; }
-.bar-row { display: grid; grid-template-columns: 150px 1fr 52px; gap: .7rem; align-items: center; font-size: .82rem; }
-.bar-row .name { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bars { display: grid; gap: .5rem; min-width: 0; }
+.bar-row { display: grid; grid-template-columns: minmax(0, 150px) 1fr 48px; gap: .7rem; align-items: center; font-size: .82rem; }
+.bar-row .name { color: var(--muted); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bar-row .val { color: var(--muted); font-family: var(--font-mono); text-align: right; }
-.bar-track { height: 12px; background: var(--panel-2); border-radius: 6px; overflow: hidden; }
+.bar-track { height: 12px; min-width: 0; background: var(--panel-2); border-radius: 6px; overflow: hidden; }
 .bar-track .fill { height: 100%; border-radius: 6px; background: var(--grad-growth); box-shadow: 0 0 14px -3px var(--cyan); transition: width .35s cubic-bezier(.2,.7,.2,1); }
 
 .sql-cap { display: flex; align-items: center; gap: .5rem; margin-bottom: .5rem; font-size: .84rem; color: var(--muted); }
@@ -210,12 +220,14 @@ select:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
 .about-intro b { color: var(--text); }
 .about-intro .flow { font-family: var(--font-mono); font-size: .8rem; color: var(--cyan); margin-top: .8rem; }
 .nb-list { display: grid; grid-template-columns: 1fr; gap: .8rem; }
-@media (min-width: 780px) { .nb-list { grid-template-columns: 1fr 1fr; } }
 .nb-card {
-  min-width: 0; border: 1px solid var(--border); border-radius: 16px; padding: 1.15rem 1.3rem;
-  background: var(--panel); backdrop-filter: blur(10px); transition: border-color .16s ease; text-decoration: none; color: inherit; display: block;
+  min-width: 0; border-radius: 16px; padding: 1.15rem 1.3rem; backdrop-filter: blur(10px);
+  border: 1px solid transparent;
+  background-image: linear-gradient(var(--panel-solid), var(--panel-solid)), linear-gradient(120deg, var(--cyan), var(--violet) 55%, var(--pink));
+  background-origin: border-box; background-clip: padding-box, border-box;
+  transition: transform .16s ease, box-shadow .16s ease; text-decoration: none; color: inherit; display: block;
 }
-.nb-card:hover { border-color: var(--cyan); }
+.nb-card:hover { transform: translateY(-2px); box-shadow: 0 0 40px -16px var(--violet); }
 .nb-card .no { font-family: var(--font-mono); font-size: .72rem; color: var(--cyan); }
 .nb-card .t { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; margin: .25rem 0 .5rem; }
 .nb-card .d { color: var(--muted); font-size: .86rem; line-height: 1.6; }
