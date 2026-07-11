@@ -1,0 +1,62 @@
+[
+  {
+    "customer_state": "SP",
+    "orders": 41736
+  },
+  {
+    "customer_state": "RJ",
+    "orders": 12848
+  },
+  {
+    "customer_state": "MG",
+    "orders": 11631
+  },
+  {
+    "customer_state": "RS",
+    "orders": 5466
+  },
+  {
+    "customer_state": "PR",
+    "orders": 5045
+  },
+  {
+    "customer_state": "SC",
+    "orders": 3636
+  },
+  {
+    "customer_state": "BA",
+    "orders": 3380
+  },
+  {
+    "customer_state": "DF",
+    "orders": 2140
+  },
+  {
+    "customer_state": "ES",
+    "orders": 2033
+  },
+  {
+    "customer_state": "GO",
+    "orders": 2020
+  },
+  {
+    "customer_state": "PE",
+    "orders": 1652
+  },
+  {
+    "customer_state": "CE",
+    "orders": 1336
+  },
+  {
+    "customer_state": "PA",
+    "orders": 975
+  },
+  {
+    "customer_state": "MT",
+    "orders": 907
+  },
+  {
+    "customer_state": "MA",
+    "orders": 747
+  }
+]

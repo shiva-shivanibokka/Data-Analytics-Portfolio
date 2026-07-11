@@ -1,0 +1,32 @@
+[
+  {
+    "stage": "created",
+    "orders": 98207,
+    "pct_of_top": 100.0
+  },
+  {
+    "stage": "approved",
+    "orders": 98202,
+    "pct_of_top": 100.0
+  },
+  {
+    "stage": "invoiced",
+    "orders": 98200,
+    "pct_of_top": 100.0
+  },
+  {
+    "stage": "processing",
+    "orders": 97886,
+    "pct_of_top": 99.7
+  },
+  {
+    "stage": "shipped",
+    "orders": 97585,
+    "pct_of_top": 99.4
+  },
+  {
+    "stage": "delivered",
+    "orders": 96478,
+    "pct_of_top": 98.2
+  }
+]

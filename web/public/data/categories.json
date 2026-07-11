@@ -1,0 +1,74 @@
+[
+  {
+    "category": "health_beauty",
+    "orders": 8810,
+    "gmv": 1443182.68,
+    "avg_review": 4.18
+  },
+  {
+    "category": "watches_gifts",
+    "orders": 5584,
+    "gmv": 1299139.04,
+    "avg_review": 4.07
+  },
+  {
+    "category": "bed_bath_table",
+    "orders": 9384,
+    "gmv": 1257709.9,
+    "avg_review": 3.97
+  },
+  {
+    "category": "sports_leisure",
+    "orders": 7668,
+    "gmv": 1154092.27,
+    "avg_review": 4.18
+  },
+  {
+    "category": "computers_accessories",
+    "orders": 6679,
+    "gmv": 1063925.67,
+    "avg_review": 4.03
+  },
+  {
+    "category": "furniture_decor",
+    "orders": 6350,
+    "gmv": 907045.66,
+    "avg_review": 4.02
+  },
+  {
+    "category": "housewares",
+    "orders": 5811,
+    "gmv": 774923.41,
+    "avg_review": 4.15
+  },
+  {
+    "category": "cool_stuff",
+    "orders": 3589,
+    "gmv": 716406.3,
+    "avg_review": 4.19
+  },
+  {
+    "category": "auto",
+    "orders": 3891,
+    "gmv": 687648.92,
+    "avg_review": 4.09
+  },
+  {
+    "category": "garden_tools",
+    "orders": 3479,
+    "gmv": 583237.3,
+    "avg_review": 4.15
+  },
+  {
+    "category": "toys",
+    "orders": 3841,
+    "gmv": 556903.78,
+    "avg_review": 4.2
+  },
+  {
+    "category": "baby",
+    "orders": 2870,
+    "gmv": 487297.73,
+    "avg_review": 4.05
+  }
+]

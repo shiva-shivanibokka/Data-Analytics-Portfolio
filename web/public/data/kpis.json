@@ -1,0 +1,10 @@
+{
+  "orders": 99421,
+  "customers": 96090,
+  "gmv": 16003842.91,
+  "aov": 160.97,
+  "repeat_rate": 0.0312,
+  "avg_review": 4.087,
+  "on_time_rate": 0.9189,
+  "avg_delivery_days": 12.6
+}

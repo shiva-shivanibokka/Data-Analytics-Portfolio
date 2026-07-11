@@ -1,0 +1,232 @@
+[
+  {
+    "order_month": "2016-09",
+    "orders": 4,
+    "gmv": 252.24,
+    "unique_customers": 4,
+    "avg_review": 1.0,
+    "avg_delivery_days": 54.81319444444444,
+    "aov": 63.06,
+    "on_time_rate": 0.0
+  },
+  {
+    "order_month": "2016-10",
+    "orders": 324,
+    "gmv": 59090.48,
+    "unique_customers": 321,
+    "avg_review": 3.561128526645768,
+    "avg_delivery_days": 19.57857175925926,
+    "aov": 182.37802469135804,
+    "on_time_rate": 0.9886792452830189
+  },
+  {
+    "order_month": "2016-12",
+    "orders": 1,
+    "gmv": 19.62,
+    "unique_customers": 1,
+    "avg_review": 5.0,
+    "avg_delivery_days": 4.693020833333334,
+    "aov": 19.62,
+    "on_time_rate": 1.0
+  },
+  {
+    "order_month": "2017-01",
+    "orders": 800,
+    "gmv": 138488.04,
+    "unique_customers": 765,
+    "avg_review": 4.062658227848101,
+    "avg_delivery_days": 12.647043518518519,
+    "aov": 173.11005,
+    "on_time_rate": 0.9693333333333334
+  },
+  {
+    "order_month": "2017-02",
+    "orders": 1780,
+    "gmv": 291908.01,
+    "unique_customers": 1755,
+    "avg_review": 4.015837104072398,
+    "avg_delivery_days": 13.168825248986131,
+    "aov": 163.99326404494383,
+    "on_time_rate": 0.9679370840895342
+  },
+  {
+    "order_month": "2017-03",
+    "orders": 2682,
+    "gmv": 449863.6,
+    "unique_customers": 2642,
+    "avg_review": 4.074596016535137,
+    "avg_delivery_days": 12.951184487831313,
+    "aov": 167.73437733035047,
+    "on_time_rate": 0.9442262372348782
+  },
+  {
+    "order_month": "2017-04",
+    "orders": 2404,
+    "gmv": 417788.03,
+    "unique_customers": 2372,
+    "avg_review": 4.046082949308755,
+    "avg_delivery_days": 14.91791250040205,
+    "aov": 173.7886980033278,
+    "on_time_rate": 0.921406860616587
+  },
+  {
+    "order_month": "2017-05",
+    "orders": 3700,
+    "gmv": 592918.82,
+    "unique_customers": 3625,
+    "avg_review": 4.142116748499728,
+    "avg_delivery_days": 11.322362975369588,
+    "aov": 160.2483297297297,
+    "on_time_rate": 0.9638928067700987
+  },
+  {
+    "order_month": "2017-06",
+    "orders": 3245,
+    "gmv": 511276.38,
+    "unique_customers": 3180,
+    "avg_review": 4.147762585456806,
+    "avg_delivery_days": 12.01157270438301,
+    "aov": 157.5582064714946,
+    "on_time_rate": 0.9614035087719298
+  },
+  {
+    "order_month": "2017-07",
+    "orders": 4026,
+    "gmv": 592382.92,
+    "unique_customers": 3947,
+    "avg_review": 4.175396825396825,
+    "avg_delivery_days": 11.592732387200606,
+    "aov": 147.13932439145555,
+    "on_time_rate": 0.965650826446281
+  },
+  {
+    "order_month": "2017-08",
+    "orders": 4331,
+    "gmv": 674396.32,
+    "unique_customers": 4246,
+    "avg_review": 4.237436016751977,
+    "avg_delivery_days": 11.147124655510508,
+    "aov": 155.71376587393212,
+    "on_time_rate": 0.9668495110899118
+  },
+  {
+    "order_month": "2017-09",
+    "orders": 4285,
+    "gmv": 727762.45,
+    "unique_customers": 4212,
+    "avg_review": 4.187838155728064,
+    "avg_delivery_days": 11.85100652889335,
+    "aov": 169.839544924154,
+    "on_time_rate": 0.9479518072289157
+  },
+  {
+    "order_month": "2017-10",
+    "orders": 4631,
+    "gmv": 779677.88,
+    "unique_customers": 4561,
+    "avg_review": 4.124537339429566,
+    "avg_delivery_days": 11.856699698526127,
+    "aov": 168.36058734614554,
+    "on_time_rate": 0.947074586869138
+  },
+  {
+    "order_month": "2017-11",
+    "orders": 7544,
+    "gmv": 1194882.8,
+    "unique_customers": 7430,
+    "avg_review": 3.9108288770053474,
+    "avg_delivery_days": 15.161131699241778,
+    "aov": 158.3884941675504,
+    "on_time_rate": 0.8568880351262349
+  },
+  {
+    "order_month": "2017-12",
+    "orders": 5673,
+    "gmv": 878401.48,
+    "unique_customers": 5603,
+    "avg_review": 4.018888096935139,
+    "avg_delivery_days": 15.394918530107287,
+    "aov": 154.8389705623127,
+    "on_time_rate": 0.9161980772719027
+  },
+  {
+    "order_month": "2018-01",
+    "orders": 7269,
+    "gmv": 1115004.18,
+    "unique_customers": 7166,
+    "avg_review": 4.041799750034717,
+    "avg_delivery_days": 14.080562613956085,
+    "aov": 153.3916879900949,
+    "on_time_rate": 0.9343612957985571
+  },
+  {
+    "order_month": "2018-02",
+    "orders": 6728,
+    "gmv": 992463.34,
+    "unique_customers": 6569,
+    "avg_review": 3.8273131494804153,
+    "avg_delivery_days": 16.94714315095869,
+    "aov": 147.512387039239,
+    "on_time_rate": 0.8401220442410373
+  },
+  {
+    "order_month": "2018-03",
+    "orders": 7211,
+    "gmv": 1159652.12,
+    "unique_customers": 7115,
+    "avg_review": 3.7535674314493566,
+    "avg_delivery_days": 16.30141017440938,
+    "aov": 160.81710165025657,
+    "on_time_rate": 0.7863772668856205
+  },
+  {
+    "order_month": "2018-04",
+    "orders": 6939,
+    "gmv": 1160785.48,
+    "unique_customers": 6882,
+    "avg_review": 4.162501816068575,
+    "avg_delivery_days": 11.499241053673193,
+    "aov": 167.28425997982418,
+    "on_time_rate": 0.9468961459252722
+  },
+  {
+    "order_month": "2018-05",
+    "orders": 6873,
+    "gmv": 1153982.15,
+    "unique_customers": 6814,
+    "avg_review": 4.194034215528586,
+    "avg_delivery_days": 11.419028935356678,
+    "aov": 167.90079295795138,
+    "on_time_rate": 0.9176174248036746
+  },
+  {
+    "order_month": "2018-06",
+    "orders": 6167,
+    "gmv": 1023880.5,
+    "unique_customers": 6128,
+    "avg_review": 4.2774792379091355,
+    "avg_delivery_days": 9.239216293167347,
+    "aov": 166.0257013134425,
+    "on_time_rate": 0.9863845144356955
+  },
+  {
+    "order_month": "2018-07",
+    "orders": 6292,
+    "gmv": 1066540.75,
+    "unique_customers": 6230,
+    "avg_review": 4.263246358251961,
+    "avg_delivery_days": 8.958636237154959,
+    "aov": 169.50743006993008,
+    "on_time_rate": 0.9551656920077973
+  },
+  {
+    "order_month": "2018-08",
+    "orders": 6512,
+    "gmv": 1022425.32,
+    "unique_customers": 6460,
+    "avg_review": 4.256206630686199,
+    "avg_delivery_days": 7.732779720458137,
+    "aov": 157.0063452088452,
+    "on_time_rate": 0.8960793575814833
+  }
+]
