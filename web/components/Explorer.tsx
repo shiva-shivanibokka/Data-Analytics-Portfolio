@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { query } from "@/lib/duckdb";
 import { brlCompact, compact, pct } from "@/lib/format";
+import Tip from "./Tip";
 
 type Agg = { orders: number; gmv: number; avg_review: number; late_rate: number };
 type CatRow = { category: string; orders: number };
@@ -62,8 +63,11 @@ export default function Explorer() {
     })();
   }, [state, category, loading, error]);
 
-  if (error)
-    return <div className="loading">Could not load the in-browser database: {error}</div>;
+  const scope = `${state === ALL ? "all states" : `state ${state}`}, ${
+    category === ALL ? "all product categories" : `the ${category} category`
+  }`;
+
+  if (error) return <div className="loading">Could not load the in-browser database: {error}</div>;
 
   return (
     <div className="console">
@@ -75,10 +79,10 @@ export default function Explorer() {
 
       {agg && (
         <div className="readtiles">
-          <Tile label="Orders" value={compact(agg.orders)} grad />
-          <Tile label="GMV" value={brlCompact(agg.gmv)} grad />
-          <Tile label="Avg review" value={`${(agg.avg_review ?? 0).toFixed(2)}★`} />
-          <Tile label="Late rate" value={pct(agg.late_rate ?? 0)} />
+          <Tile label="Orders" value={compact(agg.orders)} grad tip="Number of orders matching the current filter." />
+          <Tile label="GMV" value={brlCompact(agg.gmv)} grad tip="Total R$ value of the matching orders." />
+          <Tile label="Avg review" value={`${(agg.avg_review ?? 0).toFixed(2)}★`} tip="Mean 1–5 star rating for the matching orders." />
+          <Tile label="Late rate" value={pct(agg.late_rate ?? 0)} tip="Share of the matching orders delivered after the estimated date." />
         </div>
       )}
 
@@ -105,9 +109,18 @@ export default function Explorer() {
       )}
 
       {sql && (
-        <pre className="sql">
-          <span className="kw">SELECT</span> {sql.replace(/^SELECT /, "")}
-        </pre>
+        <div>
+          <div className="sql-cap">
+            <b>Live SQL</b>
+            <Tip text="The exact query DuckDB-WASM just ran against orders.parquet — entirely in your browser. It re-runs every time you change a filter." />
+            <span>
+              Counts orders and computes revenue, average review and late-delivery rate for {scope}.
+            </span>
+          </div>
+          <pre className="sql">
+            <span className="kw">SELECT</span> {sql.replace(/^SELECT /, "")}
+          </pre>
+        </div>
       )}
     </div>
   );
@@ -138,10 +151,13 @@ function Select({
   );
 }
 
-function Tile({ label, value, grad }: { label: string; value: string; grad?: boolean }) {
+function Tile({ label, value, grad, tip }: { label: string; value: string; grad?: boolean; tip: string }) {
   return (
     <div className="readtile">
-      <div className="k">{label}</div>
+      <div className="tile-head">
+        <span className="k">{label}</span>
+        <Tip text={tip} />
+      </div>
       <div className={`v${grad ? " grad" : ""}`}>{value}</div>
     </div>
   );
