@@ -27,12 +27,18 @@ export function getConnection(): Promise<duckdb.AsyncDuckDBConnection> {
     dbPromise ??= initDB();
     const db = await dbPromise;
     const res = await fetch("/data/orders.parquet");
+    if (!res.ok) throw new Error(`Failed to load orders.parquet (${res.status})`);
     const buf = new Uint8Array(await res.arrayBuffer());
     await db.registerFileBuffer("orders.parquet", buf);
     const conn = await db.connect();
     await conn.query("CREATE VIEW orders AS SELECT * FROM parquet_scan('orders.parquet')");
     return conn;
-  })();
+  })().catch((e) => {
+    // Don't cache a rejected promise — otherwise every later query fails until reload.
+    ready = null;
+    dbPromise = null;
+    throw e;
+  });
   return ready;
 }
 

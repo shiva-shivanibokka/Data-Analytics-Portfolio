@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { query } from "@/lib/duckdb";
 import { brlCompact, compact, pct, prettyCategory, stateName } from "@/lib/format";
 import Tip from "./Tip";
@@ -20,6 +20,7 @@ export default function Explorer() {
   const [agg, setAgg] = useState<Agg | null>(null);
   const [breakdown, setBreakdown] = useState<CatRow[]>([]);
   const [sql, setSql] = useState("");
+  const reqId = useRef(0);
 
   useEffect(() => {
     (async () => {
@@ -47,18 +48,23 @@ export default function Explorer() {
       category !== ALL ? `category = '${category}'` : null,
     ].filter(Boolean);
     const clause = where.length ? `WHERE ${where.join(" AND ")}` : "";
+    // avg(is_late::DOUBLE) skips NULL (non-delivered orders) → late rate among
+    // delivered only, matching the funnel/notebooks. CASE ... ELSE 0 would count
+    // non-delivered as on-time and understate it.
     const aggSql = `SELECT count(*)::DOUBLE orders, sum(payment_value)::DOUBLE gmv,
        avg(review_score)::DOUBLE avg_review,
-       avg(CASE WHEN is_late THEN 1 ELSE 0 END)::DOUBLE late_rate
+       avg(is_late::DOUBLE) late_rate
        FROM orders ${clause}`;
     setSql(aggSql.replace(/\s+/g, " ").trim());
+    const myId = ++reqId.current;
     (async () => {
       const [a] = await query<Agg>(aggSql);
-      setAgg(a);
       const b = await query<CatRow>(
         `SELECT category, count(*)::DOUBLE orders FROM orders ${clause}
          GROUP BY 1 ORDER BY orders DESC LIMIT 8`,
       );
+      if (myId !== reqId.current) return; // a newer filter change superseded this one
+      setAgg(a);
       setBreakdown(b);
     })();
   }, [state, category, loading, error]);
@@ -91,8 +97,8 @@ export default function Explorer() {
 
       {agg && (
         <div className="readtiles">
-          <Tile label="Orders" value={compact(agg.orders)} grad tip="Number of orders matching the current filter." />
-          <Tile label="GMV" value={brlCompact(agg.gmv)} grad tip="Total R$ value of the matching orders." />
+          <Tile label="Orders" value={compact(agg.orders ?? 0)} grad tip="Number of orders matching the current filter." />
+          <Tile label="GMV" value={brlCompact(agg.gmv ?? 0)} grad tip="Total R$ value of the matching orders." />
           <Tile label="Avg review" value={`${(agg.avg_review ?? 0).toFixed(2)}★`} tip="Mean 1–5 star rating for the matching orders." />
           <Tile label="Late rate" value={pct(agg.late_rate ?? 0)} tip="Share of the matching orders delivered after the estimated date." />
         </div>
