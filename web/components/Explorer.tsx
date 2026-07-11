@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { query } from "@/lib/duckdb";
-import { brl, compact, pct } from "@/lib/format";
+import { brlCompact, compact, pct } from "@/lib/format";
 
 type Agg = { orders: number; gmv: number; avg_review: number; late_rate: number };
 type CatRow = { category: string; orders: number };
@@ -20,7 +20,6 @@ export default function Explorer() {
   const [breakdown, setBreakdown] = useState<CatRow[]>([]);
   const [sql, setSql] = useState("");
 
-  // One-time init: warm the DB and load filter option lists.
   useEffect(() => {
     (async () => {
       try {
@@ -40,7 +39,6 @@ export default function Explorer() {
     })();
   }, []);
 
-  // Re-query whenever a filter changes.
   useEffect(() => {
     if (loading || error) return;
     const where = [
@@ -65,42 +63,40 @@ export default function Explorer() {
   }, [state, category, loading, error]);
 
   if (error)
-    return (
-      <div className="rounded-lg bg-red-50 p-4 text-sm text-red-700">
-        Could not load the in-browser database: {error}
-      </div>
-    );
+    return <div className="loading">Could not load the in-browser database: {error}</div>;
 
   return (
-    <div>
-      <div className="mb-4 flex flex-wrap items-end gap-4">
+    <div className="console">
+      <div className="controls">
         <Select label="State" value={state} options={[ALL, ...states]} onChange={setState} />
         <Select label="Category" value={category} options={[ALL, ...categories]} onChange={setCategory} />
-        {loading && <span className="text-sm text-slate-500">Loading DuckDB in your browser…</span>}
+        {loading && <span className="loading">● booting DuckDB in your browser…</span>}
       </div>
 
       {agg && (
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-          <Tile label="Orders" value={compact(agg.orders)} />
-          <Tile label="GMV" value={brl(agg.gmv)} />
-          <Tile label="Avg review" value={`${(agg.avg_review ?? 0).toFixed(2)} ★`} />
+        <div className="readtiles">
+          <Tile label="Orders" value={compact(agg.orders)} grad />
+          <Tile label="GMV" value={brlCompact(agg.gmv)} grad />
+          <Tile label="Avg review" value={`${(agg.avg_review ?? 0).toFixed(2)}★`} />
           <Tile label="Late rate" value={pct(agg.late_rate ?? 0)} />
         </div>
       )}
 
       {breakdown.length > 0 && (
-        <div className="mt-4">
-          <div className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-500">
-            Top categories for this selection
+        <div>
+          <div className="field" style={{ marginBottom: ".6rem" }}>
+            <label>Top categories · this selection</label>
           </div>
-          <div className="space-y-1">
+          <div className="bars">
             {breakdown.map((r) => {
               const max = breakdown[0].orders || 1;
               return (
-                <div key={r.category} className="flex items-center gap-2 text-sm">
-                  <div className="w-40 shrink-0 truncate text-slate-600">{r.category}</div>
-                  <div className="h-4 rounded bg-brandlt" style={{ width: `${(r.orders / max) * 60}%` }} />
-                  <div className="text-xs text-slate-400">{compact(r.orders)}</div>
+                <div key={r.category} className="bar-row">
+                  <div className="name">{r.category}</div>
+                  <div className="bar-track">
+                    <div className="fill" style={{ width: `${(r.orders / max) * 100}%` }} />
+                  </div>
+                  <div className="val">{compact(r.orders)}</div>
                 </div>
               );
             })}
@@ -109,8 +105,8 @@ export default function Explorer() {
       )}
 
       {sql && (
-        <pre className="mt-4 overflow-x-auto rounded-lg bg-slate-900 p-3 text-xs text-slate-100">
-          {sql}
+        <pre className="sql">
+          <span className="kw">SELECT</span> {sql.replace(/^SELECT /, "")}
         </pre>
       )}
     </div>
@@ -129,28 +125,24 @@ function Select({
   onChange: (v: string) => void;
 }) {
   return (
-    <label className="text-sm">
-      <span className="mb-1 block text-xs font-medium uppercase tracking-wide text-slate-500">{label}</span>
-      <select
-        className="rounded-lg border border-slate-300 bg-white px-3 py-1.5"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      >
+    <div className="field">
+      <label>{label}</label>
+      <select value={value} onChange={(e) => onChange(e.target.value)}>
         {options.map((o) => (
           <option key={o} value={o}>
             {o}
           </option>
         ))}
       </select>
-    </label>
+    </div>
   );
 }
 
-function Tile({ label, value }: { label: string; value: string }) {
+function Tile({ label, value, grad }: { label: string; value: string; grad?: boolean }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="text-xs font-medium uppercase tracking-wide text-slate-500">{label}</div>
-      <div className="mt-1 text-xl font-bold">{value}</div>
+    <div className="readtile">
+      <div className="k">{label}</div>
+      <div className={`v${grad ? " grad" : ""}`}>{value}</div>
     </div>
   );
 }
