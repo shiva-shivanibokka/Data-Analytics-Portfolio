@@ -171,10 +171,18 @@ a { color: var(--cyan); text-decoration-color: color-mix(in srgb, var(--cyan) 40
 .field { display: grid; gap: .3rem; }
 .field label { font-family: var(--font-mono); font-size: .68rem; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); }
 select {
-  background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
-  border-radius: 10px; padding: .5rem .7rem; font-size: .9rem; font-family: var(--font-body); min-width: 150px;
+  appearance: none; -webkit-appearance: none;
+  color: var(--text); font-size: .9rem; font-family: var(--font-body); cursor: pointer;
+  min-width: 210px; padding: .6rem 2.1rem .6rem .85rem; border-radius: 11px;
+  border: 1px solid var(--border);
+  background-color: color-mix(in srgb, var(--panel-2) 85%, #0a0f22);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3c7' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right .8rem center; background-size: 12px;
+  transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
 }
-select:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+select:hover { border-color: color-mix(in srgb, var(--cyan) 55%, var(--border)); background-color: color-mix(in srgb, var(--panel-2) 70%, #0a0f22); }
+select:focus-visible { outline: none; border-color: var(--cyan); box-shadow: 0 0 0 3px color-mix(in srgb, var(--cyan) 22%, transparent); }
+select option { background: var(--panel-solid); color: var(--text); }
 .loading { font-family: var(--font-mono); font-size: .8rem; color: var(--cyan); }
 
 .readtiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: .7rem; }
