@@ -1,0 +1,9 @@
+{
+  "total": 99421,
+  "delivered": 96478,
+  "in_progress": 1728,
+  "failed": 1215,
+  "delivered_pct": 97.0,
+  "in_progress_pct": 1.7,
+  "failed_pct": 1.2
+}

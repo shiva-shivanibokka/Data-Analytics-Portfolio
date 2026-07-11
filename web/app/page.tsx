@@ -4,6 +4,7 @@ import monthly from "@/public/data/monthly.json";
 import funnel from "@/public/data/funnel.json";
 import categories from "@/public/data/categories.json";
 import states from "@/public/data/states.json";
+import outcomes from "@/public/data/outcomes.json";
 
 export default function Home() {
   return (
@@ -24,7 +25,14 @@ export default function Home() {
         </span>
       </header>
 
-      <Dashboard kpis={kpis} monthly={monthly} funnel={funnel} categories={categories} states={states} />
+      <Dashboard
+        kpis={kpis}
+        monthly={monthly}
+        funnel={funnel}
+        categories={categories}
+        states={states}
+        outcomes={outcomes}
+      />
 
       <footer className="footer">
         Built by <b style={{ color: "var(--text)" }}>Shivani Bokka</b>. Python pipeline (pandas · DuckDB · pandera) →

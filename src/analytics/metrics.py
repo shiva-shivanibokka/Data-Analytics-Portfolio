@@ -59,6 +59,29 @@ def status_funnel(orders: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def delivery_outcomes(orders: pd.DataFrame) -> dict:
+    """Where every order ends up — so the funnel's 'missing' orders are explained.
+
+    Three mutually exclusive buckets covering 100% of orders:
+    delivered, still in progress (shipped/invoiced/processing/approved/created),
+    and failed (canceled/unavailable)."""
+    o = transform.clip_to_window(orders)
+    n = len(o)
+    s = o["order_status"]
+    delivered = int((s == "delivered").sum())
+    failed = int(s.isin(["canceled", "unavailable"]).sum())
+    in_progress = n - delivered - failed
+    return {
+        "total": n,
+        "delivered": delivered,
+        "in_progress": in_progress,
+        "failed": failed,
+        "delivered_pct": round(delivered / n * 100, 1),
+        "in_progress_pct": round(in_progress / n * 100, 1),
+        "failed_pct": round(failed / n * 100, 1),
+    }
+
+
 def cohort_retention(customers: pd.DataFrame, orders: pd.DataFrame) -> pd.DataFrame:
     """Repeat-purchase retention: of each signup cohort, what share ordered
     again in month 0,1,2,... after their first order. Olist's overall repeat
@@ -114,6 +137,7 @@ def export_web(tables: dict[str, pd.DataFrame]) -> list[str]:
 
     artifacts = {
         "kpis": kpi_summary(orders, customers),
+        "outcomes": delivery_outcomes(orders),
         "monthly": monthly_metrics(orders).assign(
             order_month=lambda d: d["order_month"].dt.strftime("%Y-%m")
         ).to_dict(orient="records"),

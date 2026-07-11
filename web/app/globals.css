@@ -109,45 +109,41 @@ a { color: var(--cyan); text-decoration-color: color-mix(in srgb, var(--cyan) 40
 .sec-title:first-of-type { margin-top: .4rem; }
 .sec-title::before { content: ""; width: 22px; height: 2px; border-radius: 2px; background: var(--grad); }
 
-/* ---- findings strip (semantic callouts) ---- */
-.findings { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .9rem; margin: 0 0 1.4rem; }
-.finding {
-  min-width: 0; border-radius: 16px; padding: 1.1rem 1.2rem; backdrop-filter: blur(10px);
-  border: 1px solid transparent;
-  background-image: linear-gradient(var(--panel-solid), var(--panel-solid)), var(--edge, var(--grad));
-  background-origin: border-box; background-clip: padding-box, border-box;
-  box-shadow: 0 0 34px -18px var(--glow, var(--violet));
-  transition: transform .16s ease, box-shadow .16s ease;
-}
-.finding:hover { transform: translateY(-2px); box-shadow: 0 0 42px -12px var(--glow, var(--violet)); }
-.finding.cyan  { --edge: linear-gradient(135deg, var(--cyan), #3b82f6); --glow: var(--cyan); }
-.finding.pink  { --edge: linear-gradient(135deg, var(--pink), var(--violet)); --glow: var(--pink); }
-.finding.lime  { --edge: linear-gradient(135deg, var(--lime), var(--cyan)); --glow: var(--lime); }
-.finding.amber { --edge: linear-gradient(135deg, var(--amber), var(--pink)); --glow: var(--amber); }
-.finding .fv { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.6rem, 2.6vw, 2.1rem); line-height: 1; letter-spacing: -.02em; margin-top: .5rem; }
-.finding.cyan .fv  { color: var(--cyan); }
-.finding.pink .fv  { color: var(--pink); }
-.finding.lime .fv  { color: var(--lime); }
-.finding.amber .fv { color: var(--amber); }
+/* ---- shared per-box color tones (edge gradient + glow + value hue) ---- */
+.cyan   { --edge: linear-gradient(135deg, var(--cyan), #3b82f6);      --glow: var(--cyan);   --hue: var(--cyan); }
+.violet { --edge: linear-gradient(135deg, var(--violet), var(--pink)); --glow: var(--violet); --hue: var(--violet); }
+.pink   { --edge: linear-gradient(135deg, var(--pink), var(--violet)); --glow: var(--pink);   --hue: var(--pink); }
+.lime   { --edge: linear-gradient(135deg, var(--lime), var(--cyan));   --glow: var(--lime);   --hue: var(--lime); }
+.amber  { --edge: linear-gradient(135deg, var(--amber), var(--pink));  --glow: var(--amber);  --hue: var(--amber); }
+.blue   { --edge: linear-gradient(135deg, #3b82f6, var(--violet));     --glow: #3b82f6;       --hue: #60a5fa; }
 
 /* ---- metric tiles (KPIs) ---- */
 .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .85rem; }
 .kpi {
   min-width: 0; position: relative; border-radius: 16px; padding: 1.05rem 1.15rem;
-  background: var(--panel); backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   border: 1px solid transparent;
-  background-image: linear-gradient(var(--panel-solid), var(--panel-solid)), var(--grad);
+  background-image: linear-gradient(var(--panel-solid), var(--panel-solid)), var(--edge, var(--grad));
   background-origin: border-box; background-clip: padding-box, border-box;
+  box-shadow: 0 0 30px -20px var(--glow, transparent);
+  transition: transform .16s ease, box-shadow .16s ease;
 }
+.kpi:hover { transform: translateY(-2px); box-shadow: 0 0 40px -14px var(--glow, var(--violet)); }
 .tile-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
 .tile-head .k { font-family: var(--font-mono); font-size: .66rem; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); }
 .kpi .v {
   font-family: var(--font-display); font-weight: 700; font-size: clamp(1.35rem, 2vw, 1.8rem);
   letter-spacing: -.02em; margin-top: .4rem; line-height: 1; white-space: nowrap;
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: tabular-nums; color: var(--hue, var(--text));
 }
-.kpi .v.warn { color: var(--pink); }
 .kpi .s { margin-top: .35rem; font-size: .74rem; color: var(--muted); }
+
+/* ---- funnel outcome breakdown ---- */
+.outcomes { display: flex; flex-wrap: wrap; gap: .6rem 1.5rem; margin-top: 1.1rem; font-size: .85rem; color: var(--muted); }
+.outcomes b { font-family: var(--font-display); font-size: 1.05rem; margin-right: .35rem; }
+.outcomes b.lime { color: var(--lime); }
+.outcomes b.cyan { color: var(--cyan); }
+.outcomes b.pink { color: var(--pink); }
 
 /* ---- glass panels ---- */
 .panel {
@@ -206,11 +202,10 @@ select:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
 .sql-cap { display: flex; align-items: center; gap: .5rem; margin-bottom: .5rem; font-size: .84rem; color: var(--muted); }
 .sql-cap b { color: var(--text); font-family: var(--font-mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .09em; }
 .sql {
-  font-family: var(--font-mono); font-size: .76rem; line-height: 1.5; color: #cfe8ff;
+  font-family: var(--font-mono); font-size: .76rem; line-height: 1.55; color: #cfe8ff;
   background: #05070f; border: 1px solid var(--border); border-radius: 12px; padding: .9rem 1rem;
-  overflow-x: auto; white-space: pre;
+  white-space: pre-wrap; word-break: break-word; /* wrap the whole query — no horizontal scroll */
 }
-.sql .kw { color: var(--pink); }
 
 /* ---- about / notebook index ---- */
 .about-intro {
@@ -223,12 +218,13 @@ select:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
 .nb-card {
   min-width: 0; border-radius: 16px; padding: 1.15rem 1.3rem; backdrop-filter: blur(10px);
   border: 1px solid transparent;
-  background-image: linear-gradient(var(--panel-solid), var(--panel-solid)), linear-gradient(120deg, var(--cyan), var(--violet) 55%, var(--pink));
+  background-image: linear-gradient(var(--panel-solid), var(--panel-solid)), var(--edge, var(--grad));
   background-origin: border-box; background-clip: padding-box, border-box;
+  box-shadow: 0 0 30px -22px var(--glow, transparent);
   transition: transform .16s ease, box-shadow .16s ease; text-decoration: none; color: inherit; display: block;
 }
-.nb-card:hover { transform: translateY(-2px); box-shadow: 0 0 40px -16px var(--violet); }
-.nb-card .no { font-family: var(--font-mono); font-size: .72rem; color: var(--cyan); }
+.nb-card:hover { transform: translateY(-2px); box-shadow: 0 0 44px -14px var(--glow, var(--violet)); }
+.nb-card .no { font-family: var(--font-mono); font-size: .72rem; color: var(--hue, var(--cyan)); }
 .nb-card .t { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; margin: .25rem 0 .5rem; }
 .nb-card .d { color: var(--muted); font-size: .86rem; line-height: 1.6; }
 

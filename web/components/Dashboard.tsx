@@ -9,27 +9,24 @@ import { CategoryChart, FunnelChart, MonthlyChart, OnTimeChart, StateChart } fro
 const REPO = "https://github.com/shiva-shivanibokka/Data-Analytics-Portfolio/blob/main/notebooks";
 
 type Monthly = { order_month: string; orders: number; gmv: number; on_time_rate: number | null; avg_review: number | null };
+type Outcomes = { delivered_pct: number; in_progress_pct: number; failed_pct: number };
 type Props = {
   kpis: Parameters<typeof KpiCards>[0]["k"];
   monthly: Monthly[];
   funnel: { stage: string; orders: number; pct_of_top: number }[];
   categories: { category: string; gmv: number }[];
   states: { customer_state: string; orders: number }[];
+  outcomes: Outcomes;
 };
 
+const NB_TONES = ["cyan", "violet", "pink", "lime", "amber", "blue", "cyan"];
+
 const TABS = [
-  { id: "overview", label: "Overview", desc: "The whole business on one screen — the four facts that shape every decision, and the headline KPIs behind them." },
+  { id: "overview", label: "Overview", desc: "The headline KPIs — the whole business at a glance. Hover the ? on any card for what the metric means and why it matters." },
   { id: "growth", label: "Growth & Fulfillment", desc: "How the marketplace grew, how orders flow through to delivered, and where delivery reliability broke down in early 2018." },
   { id: "segments", label: "Segments", desc: "What sells and where — revenue by product category and order volume by customer state." },
   { id: "explorer", label: "Live Explorer", desc: "Query ~99k real orders yourself. Every filter runs a SQL statement against a Parquet file in your browser via DuckDB-WASM — no server involved." },
   { id: "about", label: "About", desc: "How this was built, and what each of the seven analysis notebooks actually investigates." },
-];
-
-const FINDINGS = [
-  { tone: "pink", h: "Repeat rate", v: "3.1%", tip: "Only ~3% of customers ever order again — Olist is a one-purchase marketplace, so retention is the core growth constraint." },
-  { tone: "cyan", h: "GMV", v: "R$16.0M", tip: "R$16.0M gross merchandise value across ~99k orders, at a R$161 average order value." },
-  { tone: "lime", h: "Avg review", v: "4.09★", tip: "Mean 1–5 star rating. High overall, but the 1-star tail is driven by late delivery, not the product." },
-  { tone: "amber", h: "Mar-2018 on-time", v: "78.6%", tip: "On-time delivery collapsed to 78.6% during the Feb–Mar 2018 backlog — the cause of that year's review-score drop." },
 ];
 
 const NOTEBOOKS = [
@@ -73,7 +70,7 @@ function Panel({ title, tag, tip, children }: { title: string; tag: string; tip:
   );
 }
 
-export default function Dashboard({ kpis, monthly, funnel, categories, states }: Props) {
+export default function Dashboard({ kpis, monthly, funnel, categories, states, outcomes }: Props) {
   const [active, setActive] = useState("overview");
   const tab = TABS.find((t) => t.id === active)!;
 
@@ -89,22 +86,7 @@ export default function Dashboard({ kpis, monthly, funnel, categories, states }:
 
       <p className="tab-desc">{tab.desc}</p>
 
-      {active === "overview" && (
-        <>
-          <div className="findings">
-            {FINDINGS.map((f) => (
-              <div key={f.v} className={`finding ${f.tone}`}>
-                <div className="tile-head">
-                  <span className="k">{f.h}</span>
-                  <Tip text={f.tip} />
-                </div>
-                <div className="fv">{f.v}</div>
-              </div>
-            ))}
-          </div>
-          <KpiCards k={kpis} />
-        </>
-      )}
+      {active === "overview" && <KpiCards k={kpis} />}
 
       {active === "growth" && (
         <>
@@ -118,10 +100,15 @@ export default function Dashboard({ kpis, monthly, funnel, categories, states }:
             </Panel>
             <Panel
               title="Order lifecycle funnel"
-              tag="~98% of orders reach delivered — the leak is lateness, not cancellation."
+              tag="Where every order ends up. The leak isn't cancellation — it's late delivery."
               tip="Each stage counts orders that reached at least that far through the order lifecycle. The final delivered stage is highlighted in lime."
             >
               <FunnelChart data={funnel} />
+              <div className="outcomes">
+                <span><b className="lime">{outcomes.delivered_pct}%</b> delivered</span>
+                <span><b className="cyan">{outcomes.in_progress_pct}%</b> still in transit / processing</span>
+                <span><b className="pink">{outcomes.failed_pct}%</b> cancelled / unavailable</span>
+              </div>
             </Panel>
           </div>
           <div style={{ marginTop: "1.1rem" }}>
@@ -171,8 +158,8 @@ export default function Dashboard({ kpis, monthly, funnel, categories, states }:
             <div className="flow">raw CSV → clean → validate → metrics → JSON + Parquet → Next.js on Vercel + DuckDB-WASM</div>
           </div>
           <div className="nb-list">
-            {NOTEBOOKS.map((n) => (
-              <a key={n.no} className="nb-card" href={`${REPO}/${n.file}`} target="_blank" rel="noreferrer">
+            {NOTEBOOKS.map((n, i) => (
+              <a key={n.no} className={`nb-card ${NB_TONES[i]}`} href={`${REPO}/${n.file}`} target="_blank" rel="noreferrer">
                 <div className="no">Notebook {n.no}</div>
                 <div className="t">{n.t}</div>
                 <div className="d">{n.d}</div>

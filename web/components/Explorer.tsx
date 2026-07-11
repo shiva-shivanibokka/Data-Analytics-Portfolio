@@ -6,7 +6,8 @@ import { brlCompact, compact, pct, prettyCategory, stateName } from "@/lib/forma
 import Tip from "./Tip";
 
 type Agg = { orders: number; gmv: number; avg_review: number; late_rate: number };
-type CatRow = { category: string; orders: number };
+type BreakRow = { name: string; orders: number };
+type Dim = "category" | "customer_state";
 
 const ALL = "All";
 
@@ -18,7 +19,8 @@ export default function Explorer() {
   const [state, setState] = useState(ALL);
   const [category, setCategory] = useState(ALL);
   const [agg, setAgg] = useState<Agg | null>(null);
-  const [breakdown, setBreakdown] = useState<CatRow[]>([]);
+  const [breakdown, setBreakdown] = useState<BreakRow[]>([]);
+  const [breakdownDim, setBreakdownDim] = useState<Dim>("category");
   const [sql, setSql] = useState("");
   const reqId = useRef(0);
 
@@ -55,17 +57,30 @@ export default function Explorer() {
        avg(review_score)::DOUBLE avg_review,
        avg(is_late::DOUBLE) late_rate
        FROM orders ${clause}`;
-    setSql(aggSql.replace(/\s+/g, " ").trim());
+
+    // Break down by the OTHER dimension: pick a category → show its top states;
+    // otherwise show top categories. (Grouping by a column you've filtered to a
+    // single value just produces one full-width bar, which is useless.)
+    const dim: Dim = category !== ALL ? "customer_state" : "category";
+    const dimClause = clause ? `${clause} AND ${dim} IS NOT NULL` : `WHERE ${dim} IS NOT NULL`;
+    const breakSql = `SELECT ${dim} AS name, count(*)::DOUBLE orders FROM orders ${dimClause} GROUP BY 1 ORDER BY orders DESC LIMIT 8`;
+
+    setSql(
+      `SELECT count(*) AS orders,\n` +
+        `       sum(payment_value) AS gmv,\n` +
+        `       avg(review_score) AS avg_review,\n` +
+        `       avg(is_late::DOUBLE) AS late_rate\n` +
+        `FROM orders` +
+        (clause ? `\n${clause}` : ""),
+    );
     const myId = ++reqId.current;
     (async () => {
       const [a] = await query<Agg>(aggSql);
-      const b = await query<CatRow>(
-        `SELECT category, count(*)::DOUBLE orders FROM orders ${clause}
-         GROUP BY 1 ORDER BY orders DESC LIMIT 8`,
-      );
+      const b = await query<BreakRow>(breakSql);
       if (myId !== reqId.current) return; // a newer filter change superseded this one
       setAgg(a);
       setBreakdown(b);
+      setBreakdownDim(dim);
     })();
   }, [state, category, loading, error]);
 
@@ -107,14 +122,17 @@ export default function Explorer() {
       {breakdown.length > 0 && (
         <div>
           <div className="field" style={{ marginBottom: ".6rem" }}>
-            <label>Top categories · this selection</label>
+            <label>
+              {breakdownDim === "customer_state" ? "Top states" : "Top categories"} · this selection
+            </label>
           </div>
           <div className="bars">
             {breakdown.map((r) => {
               const max = breakdown[0].orders || 1;
+              const name = breakdownDim === "customer_state" ? stateName(r.name) : prettyCategory(r.name);
               return (
-                <div key={r.category} className="bar-row">
-                  <div className="name">{prettyCategory(r.category)}</div>
+                <div key={r.name} className="bar-row">
+                  <div className="name">{name}</div>
                   <div className="bar-track">
                     <div className="fill" style={{ width: `${(r.orders / max) * 100}%` }} />
                   </div>
@@ -135,9 +153,7 @@ export default function Explorer() {
               Counts orders and computes revenue, average review and late-delivery rate for {scope}.
             </span>
           </div>
-          <pre className="sql">
-            <span className="kw">SELECT</span> {sql.replace(/^SELECT /, "")}
-          </pre>
+          <pre className="sql">{sql}</pre>
         </div>
       )}
     </div>
