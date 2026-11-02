@@ -162,7 +162,6 @@ metrics.kpi_summary(orders, customers)
 ├── web/                      # Next.js dashboard (Recharts + DuckDB-WASM)
 │   └── public/data/          # committed JSON + slim parquet the dashboard reads
 ├── .github/workflows/ci.yml  # lint · tests · run notebooks · web build
-├── AUDIT.md                  # whole-repo bug-audit report
 └── Makefile · pyproject.toml
 ```
 
